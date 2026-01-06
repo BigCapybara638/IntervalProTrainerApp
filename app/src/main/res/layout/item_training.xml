@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/item_training"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp">
+
+<LinearLayout
+    android:id="@+id/trainingLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/nameTraining"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/intervalWork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Work"
+            android:textSize="20sp"
+            android:layout_marginHorizontal="4dp"
+            />
+
+        <TextView
+            android:id="@+id/intervalRelax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Work"
+            android:textSize="20sp"
+            android:layout_marginHorizontal="4dp"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/cycles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Counter"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textSize="16sp"/>
+
+
+</LinearLayout>
+
+</androidx.cardview.widget.CardView>
