@@ -6,4 +6,5 @@ data class TrainingItem(
     val intervalWork: Int,
     val intervalRelax: Int,
     val cycles: Int,
+    val color: Int = 0,
 )

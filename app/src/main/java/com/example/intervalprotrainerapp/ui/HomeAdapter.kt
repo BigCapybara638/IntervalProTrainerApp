@@ -1,7 +1,9 @@
 package com.example.intervalprotrainerapp.ui
 
+import com.example.intervalprotrainerapp.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,10 +16,31 @@ class HomeAdapter : ListAdapter<TrainingItem, HomeAdapter.HomeViewHolder>(DIFF_C
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(training: TrainingItem) {
+            val context = binding.root.context
+
             binding.nameTraining.text = training.name
             binding.intervalWork.text = training.intervalWork.toString()
             binding.intervalRelax.text = training.intervalRelax.toString()
             binding.cycles.text = training.cycles.toString()
+
+            binding.customView.setOnClickListener {
+                binding.customView.updateProgress()
+            }
+
+            binding.customView.chooseColor(CustomProgressBarColors.RED)
+
+            when(training.color) {
+                0 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card1))
+                1 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card2))
+                2 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card3))
+                3 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card4))
+                4 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card5))
+                5 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card6))
+                6 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card7))
+                7 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card8))
+            }
+
+
         }
     }
 

@@ -2,4 +2,23 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="progress0">#ADADAD</color>
+    <color name="progress1">#FF9CB9</color>
+    <color name="progress2">#EE96FF</color>
+    <color name="progress3">#92A2FF</color>
+    <color name="progress4">#8EEFFF</color>
+    <color name="progress5">#FBA48C</color>
+    <color name="progress6">#8DF891</color>
+    <color name="progress7">#FFF38B</color>
+    <color name="progress8">#C1FB81</color>
+
+    <color name="card1">#FFB3C8</color>
+    <color name="card2">#EFADFF</color>
+    <color name="card3">#A8B6FF</color>
+    <color name="card4">#A9F3FF</color>
+    <color name="card5">#FFBDAA</color>
+    <color name="card6">#ADFDB0</color>
+    <color name="card7">#FDF5AE</color>
+    <color name="card8">#D2FAA6</color>
+
 </resources>
