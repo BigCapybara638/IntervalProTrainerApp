@@ -85,6 +85,8 @@ class CustomProgressBarView @JvmOverloads constructor(
         invalidate()
     }
 
+    fun setStrWidth() {}
+
     fun chooseColor(color: CustomProgressBarColors) {
         foregroundColor = when(color) {
             CustomProgressBarColors.RED -> ContextCompat.getColor(context, R.color.progress1)

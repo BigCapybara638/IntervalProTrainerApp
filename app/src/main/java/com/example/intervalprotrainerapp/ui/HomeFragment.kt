@@ -68,18 +68,36 @@ class HomeFragment : Fragment() {
 
         homeAdapter.submitList(list)
 
+        homeAdapter.onItemClick = { training ->
+            navigateToSecondFragment(training)
+        }
+
         binding.floatingActionButton.setOnClickListener {
-            Log.e("lifeCycle", "start_counter")
-            val intent = Intent(requireContext(), TimerService::class.java).apply {
-                action = TimerService.ACTION_START
-                putExtra("end_value", 60)
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                requireContext().startForegroundService(intent)
-            } else {
-                requireContext().startService(intent)
+//            Log.e("lifeCycle", "start_counter")
+//            val intent = Intent(requireContext(), TimerService::class.java).apply {
+//                action = TimerService.ACTION_START
+//                putExtra("end_value", 60)
+//            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                requireContext().startForegroundService(intent)
+//            } else {
+//                requireContext().startService(intent)
+//            }
+        }
+
+    }
+
+    fun navigateToSecondFragment(training: TrainingItem) {
+        val fragment = TrainingFragment().apply {
+            arguments = Bundle().apply {
+                putString("color", training.color.toString())
             }
         }
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.itemFragment, fragment)
+            .addToBackStack("first") // Добавляем в стек возврата
+            .commit()
     }
 
 }

@@ -11,6 +11,7 @@ import com.example.intervalprotrainerapp.databinding.ItemTrainingBinding
 import com.example.intervalprotrainerapp.models.TrainingItem
 
 class HomeAdapter : ListAdapter<TrainingItem, HomeAdapter.HomeViewHolder>(DIFF_CALLBACK) {
+    var onItemClick: ((TrainingItem) -> Unit)? = null
 
     inner class HomeViewHolder(private val binding: ItemTrainingBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -40,6 +41,9 @@ class HomeAdapter : ListAdapter<TrainingItem, HomeAdapter.HomeViewHolder>(DIFF_C
                 7 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card8))
             }
 
+            binding.root.setOnClickListener {
+                onItemClick?.invoke(training)
+            }
 
         }
     }
