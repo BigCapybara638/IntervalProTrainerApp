@@ -1,18 +1,21 @@
 package com.example.intervalprotrainerapp.ui
 
+import android.content.Intent
 import android.graphics.Rect
+import android.os.Build
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.intervalprotrainerapp.R
 import com.example.intervalprotrainerapp.databinding.FragmentHomeBinding
 import com.example.intervalprotrainerapp.models.TrainingItem
+import com.example.intervalprotrainerapp.service.TimerService
 
 class HomeFragment : Fragment() {
 
@@ -48,7 +51,6 @@ class HomeFragment : Fragment() {
             TrainingItem(3, "Beg", 50, 40, 3),
             )
 
-
         binding.trainingList.apply {
             adapter = homeAdapter
             layoutManager = GridLayoutManager(requireContext(),
@@ -61,6 +63,19 @@ class HomeFragment : Fragment() {
         }
 
         homeAdapter.submitList(list)
+
+        binding.floatingActionButton.setOnClickListener {
+            Log.e("lifeCycle", "start_counter")
+            val intent = Intent(requireContext(), TimerService::class.java).apply {
+                action = TimerService.ACTION_START
+                putExtra("end_value", 60)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                requireContext().startForegroundService(intent)
+            } else {
+                requireContext().startService(intent)
+            }
+        }
     }
 
 }
