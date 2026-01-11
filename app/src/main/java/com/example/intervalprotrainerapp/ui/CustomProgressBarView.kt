@@ -19,7 +19,7 @@ class CustomProgressBarView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : View(context, attrs, defStyleAttr) {
 
-    private var strWidth = 40f
+    private var strWidth = 60f
     private var countShares = 60
     private var count = 1
 
@@ -67,6 +67,9 @@ class CustomProgressBarView @JvmOverloads constructor(
             (360f / countShares.toFloat() * count.toFloat()),
             false,
             paintArg)
+
+
+
     }
 
     fun updateCountShares(shares: Int) {
@@ -75,6 +78,11 @@ class CustomProgressBarView @JvmOverloads constructor(
 
     fun updateProgress() {
         count++
+        invalidate()
+    }
+
+    fun setProgress(progress: Int) {
+        count = progress
         invalidate()
     }
 

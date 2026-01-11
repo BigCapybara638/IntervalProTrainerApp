@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.intervalprotrainerapp.models.TrainingItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,7 +21,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 
+enum class TimerState {
+    WORK, RELAX
+}
+
 class TimerService : Service() {
+
+    private val localBroadcastManager by lazy {
+        LocalBroadcastManager.getInstance(this)
+    }
 
     companion object {
         const val CHANNEL_ID = "CounterServiceChannel"
@@ -31,13 +41,19 @@ class TimerService : Service() {
         const val ACTION_INCREMENT = "ACTION_INCREMENT"
         const val ACTION_RESET = "ACTION_RESET"
 
-        const val EXTRA_END_VALUE = "end_value"
+        const val ACTION_TIMER_UPDATE = "ACTION_TIMER_UPDATE"
+        const val EXTRA_COUNT = "EXTRA_COUNT"
+        const val EXTRA_INTERVAL = "EXTRA_INTERVAL"
+
+        const val EXTRA_TRAINING = "training"
         const val EXTRA_INCREMENT_BY = "increment_by"
         const val EXTRA_SPEED = "speed"
     }
 
     private val counter = AtomicInteger(0)
     private var isRunning = false
+
+    private var state = TimerState.WORK
     private var job: Job? = null
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -56,8 +72,8 @@ class TimerService : Service() {
         Log.e("lifeCycle", "onStartCommand")
         when(intent?.action) {
             ACTION_START -> {
-                val endValue = intent.getIntExtra(EXTRA_END_VALUE, 60)
-                start_counter(endValue)
+                val training = intent.getParcelableExtra<TrainingItem>(EXTRA_TRAINING)
+                start_counter(training!!)
                 Log.e("lifeCycle", "ACTION_START")
             }
         }
@@ -65,19 +81,50 @@ class TimerService : Service() {
         return START_STICKY
     }
 
-    private fun start_counter(endValue: Int = 60) {
+    private fun start_counter(training: TrainingItem) {
         counter.set(0)
         isRunning = true
 
         updateNotification()
 
         job = serviceScope.launch {
-            for (i in 0 until endValue) {
-                delay(1000L)
-                counter.addAndGet(1)
-                updateNotification()
-                Log.e("lifeCycle", "start_counter")
+            for (i in 0 until training.cycles * 2 - 1) {
+                when(state) {
+                    TimerState.WORK -> {
+                        for (j in 1 .. training.intervalWork) {
+                            delay(1000L)
+                            counter.addAndGet(1)
+                            updateNotification()
+                            Log.e("lifeCycle", "counterWork = $j")
+                            val intent = Intent(ACTION_TIMER_UPDATE).apply {
+                                putExtra(EXTRA_COUNT, j)
+                                putExtra(EXTRA_INTERVAL, training.intervalWork)
+                                putExtra("state", state.name)
+                            }
+                            localBroadcastManager.sendBroadcast(intent)
+                        }
+                        counter.set(0)
+                        state = TimerState.RELAX
+                    }
+                    TimerState.RELAX -> {
+                        for (j in 1 .. training.intervalRelax) {
+                            delay(1000L)
+                            counter.addAndGet(1)
+                            updateNotification()
+                            Log.e("lifeCycle", "counterRelax = $j")
+                            val intent = Intent(ACTION_TIMER_UPDATE).apply {
+                                putExtra(EXTRA_COUNT, j)
+                                putExtra(EXTRA_INTERVAL, training.intervalRelax)
+                                putExtra("state", state.name)
+                            }
+                            localBroadcastManager.sendBroadcast(intent)
+                        }
+                        counter.set(0)
+                        state = TimerState.WORK
+                    }
+                }
             }
+
         }
     }
 

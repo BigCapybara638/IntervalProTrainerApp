@@ -1,19 +1,50 @@
 package com.example.intervalprotrainerapp.ui
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import com.example.intervalprotrainerapp.R
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
 import com.example.intervalprotrainerapp.models.TrainingItem
+import com.example.intervalprotrainerapp.service.TimerService
 
 class TrainingFragment : Fragment() {
 
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when(intent?.action) {
+                TimerService.ACTION_TIMER_UPDATE -> {
+                    val progress = intent.getIntExtra(TimerService.EXTRA_COUNT, 1)
+                    val shares = intent.getIntExtra(TimerService.EXTRA_INTERVAL, 10)
+                    binding.customProgressBar.apply {
+                        updateCountShares(shares)
+                        setProgress(progress)
+                    }
+                }
+            }
+        }
+    }
+
     private var _binding: FragmentTrainingBinding? = null
     private val binding get() = _binding!!
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(broadcastReceiver,
+                IntentFilter(TimerService.ACTION_TIMER_UPDATE))
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,9 +57,8 @@ class TrainingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val training = arguments?.getParcelable<TrainingItem>("training")
-
-
 
         when(training?.color) {
             0 -> {
@@ -80,7 +110,24 @@ class TrainingFragment : Fragment() {
             }
         }
 
+        binding.buttonStart.setOnClickListener {
+            Log.e("lifeCycle", "start_counter")
+            val intent = Intent(requireContext(), TimerService::class.java).apply {
+                action = TimerService.ACTION_START
+                putExtra("training", training)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                requireContext().startForegroundService(intent)
+            } else {
+                requireContext().startService(intent)
+            }
+        }
+
     }
 
-
+    override fun onStop() {
+        super.onStop()
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(broadcastReceiver)
+    }
 }

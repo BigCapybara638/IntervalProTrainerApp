@@ -16,13 +16,4 @@ data class TrainingItem(
     override fun describeContents(): Int {
         return 0
     }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(id)
-        dest.writeString(name)
-        dest.writeInt(intervalWork)
-        dest.writeInt(intervalRelax)
-        dest.writeInt(cycles)
-        dest.writeInt(color)
-    }
 }
