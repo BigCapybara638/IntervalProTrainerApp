@@ -43,6 +43,7 @@ android {
 
 dependencies {
 
+    implementation("org.jetbrains.kotlin:kotlin-parcelize-runtime:1.9.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

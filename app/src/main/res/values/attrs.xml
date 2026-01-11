@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyCustomView">
+        <!-- Простые атрибуты -->
+<!--        <attr name="customText" format="string"/>-->
+<!--        <attr name="customColor" format="color"/>-->
+        <attr name="customSize" format="dimension"/>
+<!--        <attr name="customEnabled" format="boolean"/>-->
+
+        <!-- Атрибут с выбором из вариантов -->
+<!--        <attr name="customMode" format="enum">-->
+<!--            <enum name="mode1" value="0"/>-->
+<!--            <enum name="mode2" value="1"/>-->
+<!--            <enum name="mode3" value="2"/>-->
+<!--        </attr>-->
+
+        <!-- Использование стандартных атрибутов -->
+<!--        <attr name="android:textSize"/>-->
+<!--        <attr name="android:background"/>-->
+    </declare-styleable>
+</resources>

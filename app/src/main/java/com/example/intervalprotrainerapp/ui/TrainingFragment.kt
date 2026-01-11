@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
+import com.example.intervalprotrainerapp.models.TrainingItem
 
 class TrainingFragment : Fragment() {
 
@@ -25,14 +26,58 @@ class TrainingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val color = arguments?.getString("color",
-            "1")
+        val training = arguments?.getParcelable<TrainingItem>("training")
 
-        when(color?.toInt()) {
-            0 -> view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))
-            1 -> view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card2))
-            2 -> view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card3))
-            3 -> view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card4))
+
+
+        when(training?.color) {
+            0 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard1))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.RED)
+            }
+            1 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card2))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard2))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.PURPLE)
+
+            }
+            2 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card3))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard3))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.BLUE)
+
+            }
+            3 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card4))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard4))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.SKY)
+
+            }
+            4 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card5))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard5))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.ORANGE)
+
+            }
+            5 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card6))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard6))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.GREEN)
+
+            }
+            6 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card7))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard7))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.YELLOW)
+
+            }
+            7 -> {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card8))
+                binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard8))
+                binding.customProgressBar.chooseColor(CustomProgressBarColors.LITE_GREEN)
+
+            }
         }
 
     }

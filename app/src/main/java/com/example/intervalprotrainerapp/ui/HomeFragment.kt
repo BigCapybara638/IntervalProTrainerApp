@@ -90,7 +90,7 @@ class HomeFragment : Fragment() {
     fun navigateToSecondFragment(training: TrainingItem) {
         val fragment = TrainingFragment().apply {
             arguments = Bundle().apply {
-                putString("color", training.color.toString())
+                putParcelable("training", training)
             }
         }
 

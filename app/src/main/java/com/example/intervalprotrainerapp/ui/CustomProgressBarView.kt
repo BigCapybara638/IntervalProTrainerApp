@@ -48,13 +48,6 @@ class CustomProgressBarView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val centerX = width / 2f
-        val centerY = height / 2f
-
-        strWidth = width * 0.2f
-
-        val radios = minOf(centerX, centerY) * 0.9f
-
         paintArg.color = backgroundColor
         canvas.drawArc(
             width.toFloat() - width.toFloat() * 0.9f,
@@ -84,8 +77,6 @@ class CustomProgressBarView @JvmOverloads constructor(
         count++
         invalidate()
     }
-
-    fun setStrWidth() {}
 
     fun chooseColor(color: CustomProgressBarColors) {
         foregroundColor = when(color) {
