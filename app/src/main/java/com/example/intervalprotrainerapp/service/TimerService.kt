@@ -4,6 +4,7 @@ import com.example.intervalprotrainerapp.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
@@ -37,10 +39,10 @@ class TimerService : Service() {
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
         const val ACTION_PAUSE = "ACTION_PAUSE"
-        const val ACTION_RESUME = "ACTION_RESUME"
         const val ACTION_INCREMENT = "ACTION_INCREMENT"
         const val ACTION_RESET = "ACTION_RESET"
 
+        const val ACTION_TIMER_STATE = "ACTION_TIMER_STATE"
         const val ACTION_TIMER_UPDATE = "ACTION_TIMER_UPDATE"
         const val EXTRA_COUNT = "EXTRA_COUNT"
         const val EXTRA_INTERVAL = "EXTRA_INTERVAL"
@@ -74,7 +76,9 @@ class TimerService : Service() {
             ACTION_START -> {
                 val training = intent.getParcelableExtra<TrainingItem>(EXTRA_TRAINING)
                 start_counter(training!!)
-                Log.e("lifeCycle", "ACTION_START")
+            }
+            ACTION_STOP -> {
+                stop_counter()
             }
         }
 
@@ -82,8 +86,17 @@ class TimerService : Service() {
     }
 
     private fun start_counter(training: TrainingItem) {
+
         counter.set(0)
         isRunning = true
+
+        val start = Intent(ACTION_TIMER_STATE).apply{
+            putExtra("is_running", isRunning)
+        }
+        localBroadcastManager.sendBroadcast(start)
+
+        val notification = buildNotification()
+        startForeground(NOTIFICATION_ID, notification)
 
         updateNotification()
 
@@ -91,7 +104,7 @@ class TimerService : Service() {
             for (i in 0 until training.cycles * 2 - 1) {
                 when(state) {
                     TimerState.WORK -> {
-                        for (j in 1 .. training.intervalWork) {
+                        for (j in 0 .. training.intervalWork) {
                             delay(1000L)
                             counter.addAndGet(1)
                             updateNotification()
@@ -107,7 +120,7 @@ class TimerService : Service() {
                         state = TimerState.RELAX
                     }
                     TimerState.RELAX -> {
-                        for (j in 1 .. training.intervalRelax) {
+                        for (j in 0 .. training.intervalRelax) {
                             delay(1000L)
                             counter.addAndGet(1)
                             updateNotification()
@@ -124,8 +137,27 @@ class TimerService : Service() {
                     }
                 }
             }
+            isRunning = false
 
+            val stop = Intent(ACTION_TIMER_STATE).apply{
+                putExtra("is_running", isRunning)
+            }
+
+            localBroadcastManager.sendBroadcast(stop)
         }
+    }
+
+    private fun stop_counter() {
+        counter.set(0)
+        isRunning = false
+        job?.cancel()
+
+        val stop = Intent(ACTION_TIMER_STATE).apply{
+            putExtra("is_running", isRunning)
+        }
+
+        localBroadcastManager.sendBroadcast(stop)
+        stopSelf()
     }
 
     private fun updateNotification(isPaused: Boolean = false) {
@@ -146,7 +178,6 @@ class TimerService : Service() {
             .setContentTitle("🔢 Счетчик работает ${if (isPaused) " (пауза)" else ""}")
             .setContentText("Текущее значение: $currentValue")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            //.setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
             .setAutoCancel(false)
@@ -160,7 +191,6 @@ class TimerService : Service() {
 
         return builder.build()
     }
-
 
     fun createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

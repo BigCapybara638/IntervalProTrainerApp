@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -23,6 +24,8 @@ class CustomProgressBarView @JvmOverloads constructor(
     private var countShares = 60
     private var count = 1
 
+    private var textToDraw = "00:00"
+
     private val backgroundColor = ContextCompat.getColor(context, R.color.progress0)
     private var foregroundColor = ContextCompat.getColor(context, R.color.progress1)
 
@@ -32,6 +35,12 @@ class CustomProgressBarView @JvmOverloads constructor(
         strokeWidth = strWidth
         strokeCap = Paint.Cap.ROUND
         isAntiAlias = true
+    }
+
+    private val paintText = Paint().apply {
+        color = Color.WHITE
+        textSize = 180f
+        textAlign = Paint.Align.CENTER
     }
 
 
@@ -68,12 +77,17 @@ class CustomProgressBarView @JvmOverloads constructor(
             false,
             paintArg)
 
+        val textBounds = Rect()
+        paintText.textSize = width / 5f
+        paintText.getTextBounds(textToDraw, 0, textToDraw.length, textBounds)
+        val baseline = height / 2f - (textBounds.top + textBounds.bottom) / 2
 
+        canvas.drawText(textToDraw, width / 2f, baseline, paintText)
 
     }
 
     fun updateCountShares(shares: Int) {
-        countShares = shares
+        countShares = shares + 1
     }
 
     fun updateProgress() {
@@ -82,7 +96,7 @@ class CustomProgressBarView @JvmOverloads constructor(
     }
 
     fun setProgress(progress: Int) {
-        count = progress
+        count = progress + 1
         invalidate()
     }
 
@@ -97,6 +111,30 @@ class CustomProgressBarView @JvmOverloads constructor(
             CustomProgressBarColors.YELLOW -> ContextCompat.getColor(context, R.color.progress7)
             CustomProgressBarColors.LITE_GREEN -> ContextCompat.getColor(context, R.color.progress8)
         }
+    }
+
+    fun setTimer(time: Int) : Boolean {
+        val minutes = time / 60
+        val seconds = time % 60
+
+        if (minutes > 59) return false
+
+        val minutesString = if(minutes <= 9) {
+            "0$minutes"
+        } else {
+            "$minutes"
+        }
+
+        val secondsString = if(seconds <= 9) {
+            "0$seconds"
+        } else {
+            "$seconds"
+        }
+
+        textToDraw = "$minutesString:$secondsString"
+        invalidate()
+
+        return true
     }
 
 //    fun updateStrokeWidth() {

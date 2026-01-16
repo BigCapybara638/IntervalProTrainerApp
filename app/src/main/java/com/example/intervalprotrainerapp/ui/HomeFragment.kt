@@ -45,10 +45,10 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val list = listOf(
-            TrainingItem(0, "Бег", 15, 10, 3),
-            TrainingItem(1, "Жим", 50, 40, 3, 1),
-            TrainingItem(2, "Тяга", 50, 40, 3, 2),
-            TrainingItem(3, "Кардио", 50, 40, 3, 3),
+            TrainingItem(0, "Бег", 15, 10, 2),
+            TrainingItem(1, "Жим", 60, 300, 3, 1),
+            TrainingItem(2, "Тяга", 50, 10, 3, 2),
+            TrainingItem(3, "Кардио", 50, 10, 3, 3),
             TrainingItem(4, "Кардио", 50, 40, 3, 4),
             TrainingItem(5, "Кардио", 50, 40, 3, 5),
             TrainingItem(6, "Кардио", 50, 40, 3, 6),
