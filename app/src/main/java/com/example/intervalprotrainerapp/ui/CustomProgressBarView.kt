@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.example.intervalprotrainerapp.models.TimerTime
 
 enum class CustomProgressBarColors {
     RED, PURPLE, BLUE, SKY, ORANGE, GREEN, YELLOW, LITE_GREEN
@@ -113,28 +114,9 @@ class CustomProgressBarView @JvmOverloads constructor(
         }
     }
 
-    fun setTimer(time: Int) : Boolean {
-        val minutes = time / 60
-        val seconds = time % 60
-
-        if (minutes > 59) return false
-
-        val minutesString = if(minutes <= 9) {
-            "0$minutes"
-        } else {
-            "$minutes"
-        }
-
-        val secondsString = if(seconds <= 9) {
-            "0$seconds"
-        } else {
-            "$seconds"
-        }
-
-        textToDraw = "$minutesString:$secondsString"
+    fun setTimer(time: Int) {
+        textToDraw = TimerTime(time).toString()
         invalidate()
-
-        return true
     }
 
 //    fun updateStrokeWidth() {

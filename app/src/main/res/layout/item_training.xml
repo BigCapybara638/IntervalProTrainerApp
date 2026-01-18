@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/nameTraining"
@@ -23,45 +23,23 @@
         android:textStyle="bold"
         android:gravity="center"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/cyclesTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/intervalWork"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Work"
-            android:textSize="20sp"
-            android:layout_marginHorizontal="4dp"
-            />
-
-        <TextView
-            android:id="@+id/intervalRelax"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Work"
-            android:textSize="20sp"
-            android:layout_marginHorizontal="4dp"
-            />
-
-    </LinearLayout>
+        android:text="Общее время"
+        android:gravity="left"
+        android:textStyle="italic"
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/cycles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Counter"
-        android:gravity="center"
+        android:gravity="left"
         android:textStyle="italic"
         android:textSize="16sp"/>
-
-    <com.example.intervalprotrainerapp.ui.CustomProgressBarView
-        android:id="@+id/customView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
 </LinearLayout>
 

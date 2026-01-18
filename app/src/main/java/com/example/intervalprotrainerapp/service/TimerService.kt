@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
@@ -38,9 +39,6 @@ class TimerService : Service() {
         const val NOTIFICATION_ID = 101
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
-        const val ACTION_PAUSE = "ACTION_PAUSE"
-        const val ACTION_INCREMENT = "ACTION_INCREMENT"
-        const val ACTION_RESET = "ACTION_RESET"
 
         const val ACTION_TIMER_STATE = "ACTION_TIMER_STATE"
         const val ACTION_TIMER_UPDATE = "ACTION_TIMER_UPDATE"
@@ -48,8 +46,6 @@ class TimerService : Service() {
         const val EXTRA_INTERVAL = "EXTRA_INTERVAL"
 
         const val EXTRA_TRAINING = "training"
-        const val EXTRA_INCREMENT_BY = "increment_by"
-        const val EXTRA_SPEED = "speed"
     }
 
     private val counter = AtomicInteger(0)
@@ -57,7 +53,7 @@ class TimerService : Service() {
 
     private var state = TimerState.WORK
     private var job: Job? = null
-    private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     private lateinit var notificationManager: NotificationManager
 
@@ -86,7 +82,9 @@ class TimerService : Service() {
     }
 
     private fun start_counter(training: TrainingItem) {
-
+        if (isRunning) {
+            stop_counter()
+        }
         counter.set(0)
         isRunning = true
 
@@ -151,12 +149,14 @@ class TimerService : Service() {
         counter.set(0)
         isRunning = false
         job?.cancel()
+        serviceScope.coroutineContext.cancelChildren()
 
         val stop = Intent(ACTION_TIMER_STATE).apply{
             putExtra("is_running", isRunning)
         }
-
         localBroadcastManager.sendBroadcast(stop)
+
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 

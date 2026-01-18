@@ -10,12 +10,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.intervalprotrainerapp.R
 import com.example.intervalprotrainerapp.databinding.FragmentHomeBinding
 import com.example.intervalprotrainerapp.models.TrainingItem
 import com.example.intervalprotrainerapp.service.TimerService
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -44,16 +47,23 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = listOf(
-            TrainingItem(0, "Бег", 15, 10, 2),
-            TrainingItem(1, "Жим", 60, 300, 3, 1),
-            TrainingItem(2, "Тяга", 50, 10, 3, 2),
-            TrainingItem(3, "Кардио", 50, 10, 3, 3),
-            TrainingItem(4, "Кардио", 50, 40, 3, 4),
-            TrainingItem(5, "Кардио", 50, 40, 3, 5),
-            TrainingItem(6, "Кардио", 50, 40, 3, 6),
-            TrainingItem(7, "Кардио", 50, 40, 3, 7),
-            )
+        viewModel.loadData()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.trainingList.collect { state ->
+                when(state) {
+                    is DataState.Error -> println("Error")
+                    is DataState.Loading -> {
+                        println("loading")
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is DataState.Success -> {
+                        homeAdapter.submitList(state.data)
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }
 
         binding.trainingList.apply {
             adapter = homeAdapter
@@ -65,8 +75,6 @@ class HomeFragment : Fragment() {
             val spacing = (12 * resources.displayMetrics.density).toInt()
             addItemDecoration(SpacesItemDecoration(spacing))
         }
-
-        homeAdapter.submitList(list)
 
         homeAdapter.onItemClick = { training ->
             navigateToSecondFragment(training)
@@ -86,8 +94,10 @@ class HomeFragment : Fragment() {
 
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.itemFragment, fragment)
-            .addToBackStack("first") // Добавляем в стек возврата
+            .addToBackStack(fragment.javaClass.simpleName) // Добавляем в стек возврата
             .commit()
+
+
     }
 
 }

@@ -20,6 +20,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.transition.Visibility
 import com.example.intervalprotrainerapp.MainActivity
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
+import com.example.intervalprotrainerapp.models.TimerTime
 import com.example.intervalprotrainerapp.models.TrainingItem
 import com.example.intervalprotrainerapp.service.TimerService
 
@@ -109,12 +110,12 @@ class TrainingFragment : Fragment() {
         }
 
 
-        binding.buttonPause.setOnClickListener {
+        binding.buttonStop.setOnClickListener {
             val intent = Intent(requireContext(), TimerService::class.java).apply {
                 action = TimerService.ACTION_STOP
                 putExtra("training", training)
             }
-            requireContext().stopService(intent)
+            requireContext().startService(intent)
         }
     }
 
@@ -122,14 +123,62 @@ class TrainingFragment : Fragment() {
         if(state) {
             binding.buttonStart.visibility = View.GONE
             binding.buttonStop.visibility = View.VISIBLE
-            binding.buttonPause.visibility = View.VISIBLE
 
+            when(training.color) {
+                0 -> {
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard1))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))
+                }
+                1 -> {
+                    view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard2))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card2))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card2))
+
+                }
+                2 -> {
+                    view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard3))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card3))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card3))
+
+                }
+                3 -> {
+                    view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard4))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card4))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card4))
+
+                }
+                4 -> {
+                    view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard5))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card5))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card5))
+
+                }
+                5 -> {
+                    view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard6))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card6))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card6))
+
+                }
+                6 -> {
+                    view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard7))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card7))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card7))
+
+                }
+                7 -> {
+                    view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard8))
+                    binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card8))
+                    binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card8))
+                }
+            }
         } else {
             binding.buttonStart.visibility = View.VISIBLE
             binding.buttonStop.visibility = View.GONE
-            binding.buttonPause.visibility = View.GONE
 
             progressBar.setTimer(training.intervalWork)
+            progressBar.updateCountShares(training.intervalWork)
+            progressBar.setProgress(0)
             when(training.color) {
                 0 -> {
                     binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))

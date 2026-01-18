@@ -7,10 +7,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class TrainingItem(
     val id: Int = 0,
-    val name: String,
-    val intervalWork: Int,
-    val intervalRelax: Int,
-    val cycles: Int,
+    val name: String = "",
+    val intervalWork: Int = 10,
+    val intervalRelax: Int = 10,
+    val cycles: Int = 2,
     val color: Int = 0,
 ) : Parcelable {
     override fun describeContents(): Int {

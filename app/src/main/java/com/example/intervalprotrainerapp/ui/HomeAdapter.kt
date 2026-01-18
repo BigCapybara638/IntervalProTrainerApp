@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.intervalprotrainerapp.databinding.ItemTrainingBinding
+import com.example.intervalprotrainerapp.models.TimerTime
 import com.example.intervalprotrainerapp.models.TrainingItem
 
 class HomeAdapter : ListAdapter<TrainingItem, HomeAdapter.HomeViewHolder>(DIFF_CALLBACK) {
@@ -18,17 +19,11 @@ class HomeAdapter : ListAdapter<TrainingItem, HomeAdapter.HomeViewHolder>(DIFF_C
 
         fun bind(training: TrainingItem) {
             val context = binding.root.context
+            val totalTime = training.intervalWork * training.cycles + training.intervalRelax + training.cycles - 1
 
             binding.nameTraining.text = training.name
-            binding.intervalWork.text = training.intervalWork.toString()
-            binding.intervalRelax.text = training.intervalRelax.toString()
-            binding.cycles.text = training.cycles.toString()
+            binding.cycles.text = "${TimerTime(totalTime).returnTime()}"
 
-            binding.customView.setOnClickListener {
-                binding.customView.updateProgress()
-            }
-
-            binding.customView.chooseColor(CustomProgressBarColors.RED)
 
             when(training.color) {
                 0 -> binding.trainingLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.card1))
