@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.ui
+package com.example.intervalprotrainerapp.ui.customviews
 
 import com.example.intervalprotrainerapp.R
 import android.content.Context
@@ -49,8 +49,11 @@ class CustomProgressBarView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        val width = MeasureSpec.getSize(widthMeasureSpec)
-        val height = width
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+        val width = minOf(widthSize, heightSize)
+        val height = minOf(widthSize, heightSize)
 
         setMeasuredDimension(width, height)
     }

@@ -9,7 +9,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/itemFragment"
-        android:name="com.example.intervalprotrainerapp.ui.HomeFragment"
+        android:name="com.example.intervalprotrainerapp.ui.home.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

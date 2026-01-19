@@ -1,11 +1,9 @@
-package com.example.intervalprotrainerapp.ui
+package com.example.intervalprotrainerapp.ui.training
 
-import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.os.Build
 import com.example.intervalprotrainerapp.R
 import android.os.Bundle
@@ -13,33 +11,44 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.transition.Visibility
-import com.example.intervalprotrainerapp.MainActivity
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
-import com.example.intervalprotrainerapp.models.TimerTime
 import com.example.intervalprotrainerapp.models.TrainingItem
 import com.example.intervalprotrainerapp.service.TimerService
+import com.example.intervalprotrainerapp.ui.customviews.CustomProgressBarColors
+import com.example.intervalprotrainerapp.ui.customviews.CustomProgressBarView
 
 class TrainingFragment : Fragment() {
 
+    private var _binding: FragmentTrainingBinding? = null
+    private val binding get() = _binding!!
     private lateinit var training: TrainingItem
     private lateinit var progressBar: CustomProgressBarView
 
+    private var progress = 1
+    private var shares = 10
+
+    private var cycle = 1
+
+    private var timerState: String = "WORK"
+
+    private var isRunning: Boolean = false
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when(intent?.action) {
                 TimerService.ACTION_TIMER_STATE -> {
-                    val timerState = intent.getBooleanExtra("is_running", false)
-                    updateUi(training, timerState)
+                    isRunning = intent.getBooleanExtra("is_running", false)
+                    updateUi(training, isRunning)
                 }
                 TimerService.ACTION_TIMER_UPDATE -> {
-                    val progress = intent.getIntExtra(TimerService.EXTRA_COUNT, 1)
-                    val shares = intent.getIntExtra(TimerService.EXTRA_INTERVAL, 10)
+                    progress = intent.getIntExtra(TimerService.EXTRA_COUNT, 1)
+                    shares = intent.getIntExtra(TimerService.EXTRA_INTERVAL, 10)
+                    cycle = intent.getIntExtra(TimerService.EXTRA_CYCLE, 1)
+                    timerState = intent.getStringExtra("state").toString()
+
                     binding.customProgressBar.apply {
                         updateCountShares(shares)
                         setProgress(progress)
@@ -49,9 +58,6 @@ class TrainingFragment : Fragment() {
             }
         }
     }
-
-    private var _binding: FragmentTrainingBinding? = null
-    private val binding get() = _binding!!
 
     override fun onStart() {
         super.onStart()
@@ -76,12 +82,38 @@ class TrainingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        training = arguments?.getParcelable<TrainingItem>("training")!!
+        training = arguments?.getParcelable(TimerService.EXTRA_TRAINING)!!
 
         progressBar = binding.customProgressBar
-        updateUi(training, false)
+        isRunning = savedInstanceState?.getBoolean("timerState") ?: false
+
+        updateUi(training, isRunning)
         setupItems(training)
     }
+
+//    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+//        super.onViewStateRestored(savedInstanceState)
+//
+//        progress = savedInstanceState?.getInt("progress") ?: 1
+//        cycle = savedInstanceState?.getInt(TimerService.EXTRA_CYCLE) ?: 1
+//        timerState = savedInstanceState?.getString("state") ?: "WORK"
+//        val intent = Intent(requireContext(), TimerService::class.java).apply {
+//            action = TimerService.ACTION_STOP
+//        }
+//        requireContext().startService(intent)
+//
+//        if(isRunning) {
+//            val intent = Intent(requireContext(), TimerService::class.java).apply {
+//                action = TimerService.ACTION_RESTART
+//                putExtra("training", training)
+//                putExtra(TimerService.EXTRA_CYCLE, cycle)
+//                putExtra("state", timerState)
+//                putExtra("progress", progress)
+//
+//            }
+//            requireContext().startService(intent)
+//        }
+//    }
 
     override fun onStop() {
         super.onStop()
@@ -89,7 +121,24 @@ class TrainingFragment : Fragment() {
             .unregisterReceiver(broadcastReceiver)
     }
 
-    /** NO WORKEEEEEEEEEEEEEED buttonPause*/
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        val intent = Intent(requireContext(), TimerService::class.java).apply {
+            action = TimerService.ACTION_STOP
+        }
+        requireContext().startService(intent)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("training", training)
+        outState.putBoolean("timerState", isRunning)
+        outState.putInt(TimerService.EXTRA_CYCLE, cycle)
+        outState.putString("state", timerState)
+        outState.putInt("progress", progress)
+    }
+
     private fun setupItems(training: TrainingItem) {
         binding.titleTraining.text = training.name
         binding.countCycles.text = "Количество кругов: ${training.cycles}"
@@ -109,7 +158,6 @@ class TrainingFragment : Fragment() {
             }
         }
 
-
         binding.buttonStop.setOnClickListener {
             val intent = Intent(requireContext(), TimerService::class.java).apply {
                 action = TimerService.ACTION_STOP
@@ -117,64 +165,85 @@ class TrainingFragment : Fragment() {
             }
             requireContext().startService(intent)
         }
+
+        binding.buttonSkip.setOnClickListener {
+            val intent = Intent(requireContext(), TimerService::class.java).apply {
+                action = TimerService.ACTION_SKIP
+            }
+            requireContext().startService(intent)
+
+        }
     }
 
     private fun updateUi(training: TrainingItem, state: Boolean) {
         if(state) {
             binding.buttonStart.visibility = View.GONE
             binding.buttonStop.visibility = View.VISIBLE
+            binding.buttonSkip.visibility = View.VISIBLE
 
             when(training.color) {
                 0 -> {
                     binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard1))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card1))
+
                 }
                 1 -> {
                     view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard2))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card2))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card2))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card2))
 
                 }
                 2 -> {
                     view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard3))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card3))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card3))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card3))
 
                 }
                 3 -> {
                     view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard4))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card4))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card4))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card4))
+
 
                 }
                 4 -> {
                     view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard5))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card5))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card5))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card5))
 
                 }
                 5 -> {
                     view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard6))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card6))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card6))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card6))
 
                 }
                 6 -> {
                     view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard7))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card7))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card7))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card7))
 
                 }
                 7 -> {
                     view?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blackcard8))
                     binding.view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card8))
                     binding.buttonStop.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card8))
+                    binding.buttonSkip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card8))
                 }
+
             }
         } else {
             binding.buttonStart.visibility = View.VISIBLE
             binding.buttonStop.visibility = View.GONE
+            binding.buttonSkip.visibility = View.GONE
 
             progressBar.setTimer(training.intervalWork)
             progressBar.updateCountShares(training.intervalWork)

@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.os.Parcelable
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -22,9 +23,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
 
-enum class TimerState {
+@Parcelize
+enum class TimerState : Parcelable {
     WORK, RELAX
 }
 
@@ -38,7 +41,9 @@ class TimerService : Service() {
         const val CHANNEL_ID = "CounterServiceChannel"
         const val NOTIFICATION_ID = 101
         const val ACTION_START = "ACTION_START"
+        const val ACTION_RESTART = "ACTION_RESTART"
         const val ACTION_STOP = "ACTION_STOP"
+        const val ACTION_SKIP = "ACTION_SKIP"
 
         const val ACTION_TIMER_STATE = "ACTION_TIMER_STATE"
         const val ACTION_TIMER_UPDATE = "ACTION_TIMER_UPDATE"
@@ -46,6 +51,13 @@ class TimerService : Service() {
         const val EXTRA_INTERVAL = "EXTRA_INTERVAL"
 
         const val EXTRA_TRAINING = "training"
+
+        const val EXTRA_CYCLE = "EXTRA_CYCLE"
+
+        const val EXTRA_PROGRESS = "EXTRA_PROGRESS"
+        const val EXTRA_SHARES= "EXTRA_SHARES"
+
+
     }
 
     private val counter = AtomicInteger(0)
@@ -76,12 +88,27 @@ class TimerService : Service() {
             ACTION_STOP -> {
                 stop_counter()
             }
+            ACTION_RESTART -> {
+                val training = intent.getParcelableExtra<TrainingItem>(EXTRA_TRAINING)
+                val shares = intent.getIntExtra(EXTRA_SHARES, 10)
+                val progress = intent.getIntExtra(EXTRA_PROGRESS, 1)
+                val state = if(intent.getStringExtra("state") == "WORK") {
+                    TimerState.WORK
+                } else TimerState.RELAX
+
+                start_counter(training!!, shares, progress, state)
+            }
         }
 
         return START_STICKY
     }
 
-    private fun start_counter(training: TrainingItem) {
+    private fun start_counter(training: TrainingItem,
+                              progress: Int = 0,
+                              cycle: Int = 0,
+                              _timerState: TimerState = TimerState.WORK
+    ) {
+        var timerState = _timerState
         if (isRunning) {
             stop_counter()
         }
@@ -99,39 +126,41 @@ class TimerService : Service() {
         updateNotification()
 
         job = serviceScope.launch {
-            for (i in 0 until training.cycles * 2 - 1) {
-                when(state) {
+            for (cycle in 0 until training.cycles * 2 - 1) {
+                when(timerState) {
                     TimerState.WORK -> {
-                        for (j in 0 .. training.intervalWork) {
+                        for (progress in 0 .. training.intervalWork) {
                             delay(1000L)
                             counter.addAndGet(1)
                             updateNotification()
-                            Log.e("lifeCycle", "counterWork = $j")
+                            Log.e("lifeCycle", "counterWork = $progress")
                             val intent = Intent(ACTION_TIMER_UPDATE).apply {
-                                putExtra(EXTRA_COUNT, j)
+                                putExtra(EXTRA_COUNT, progress)
                                 putExtra(EXTRA_INTERVAL, training.intervalWork)
                                 putExtra("state", state.name)
+                                putExtra(EXTRA_CYCLE, progress)
                             }
                             localBroadcastManager.sendBroadcast(intent)
                         }
                         counter.set(0)
-                        state = TimerState.RELAX
+                        timerState = TimerState.RELAX
                     }
                     TimerState.RELAX -> {
-                        for (j in 0 .. training.intervalRelax) {
+                        for (progress in 0 .. training.intervalRelax) {
                             delay(1000L)
                             counter.addAndGet(1)
                             updateNotification()
-                            Log.e("lifeCycle", "counterRelax = $j")
+                            Log.e("lifeCycle", "counterRelax = $progress")
                             val intent = Intent(ACTION_TIMER_UPDATE).apply {
-                                putExtra(EXTRA_COUNT, j)
+                                putExtra(EXTRA_COUNT, progress)
                                 putExtra(EXTRA_INTERVAL, training.intervalRelax)
                                 putExtra("state", state.name)
+                                putExtra(EXTRA_CYCLE, progress)
                             }
                             localBroadcastManager.sendBroadcast(intent)
                         }
                         counter.set(0)
-                        state = TimerState.WORK
+                        timerState = TimerState.WORK
                     }
                 }
             }

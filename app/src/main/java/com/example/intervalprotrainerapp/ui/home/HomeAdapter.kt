@@ -1,12 +1,12 @@
-package com.example.intervalprotrainerapp.ui
+package com.example.intervalprotrainerapp.ui.home
 
-import com.example.intervalprotrainerapp.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.intervalprotrainerapp.R
 import com.example.intervalprotrainerapp.databinding.ItemTrainingBinding
 import com.example.intervalprotrainerapp.models.TimerTime
 import com.example.intervalprotrainerapp.models.TrainingItem
@@ -57,7 +57,7 @@ class HomeAdapter : ListAdapter<TrainingItem, HomeAdapter.HomeViewHolder>(DIFF_C
         return HomeViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: HomeAdapter.HomeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 

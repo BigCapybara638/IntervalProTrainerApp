@@ -5,9 +5,6 @@ import android.view.LayoutInflater
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.intervalprotrainerapp.databinding.ActivityMainBinding
-import com.example.intervalprotrainerapp.ui.HomeFragment
-import com.example.intervalprotrainerapp.ui.TrainingFragment
-import kotlin.text.replace
 
 class MainActivity : AppCompatActivity() {
 
