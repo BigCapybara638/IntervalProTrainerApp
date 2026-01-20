@@ -5,13 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.intervalprotrainerapp.data.DatabaseRepository
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import com.example.intervalprotrainerapp.domain.usecases.GetAllTrainingUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel() : ViewModel() {
-
-    private val getAllTrainingUseCase = GetAllTrainingUseCase(DatabaseRepository())
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val getAllTrainingUseCases: GetAllTrainingUseCase
+) : ViewModel() {
 
     /** Состяние для данных о тренировках */
     private val _trainingList = MutableStateFlow<DataState<List<TrainingItem>>>(DataState.Loading)
@@ -37,7 +40,7 @@ class HomeViewModel() : ViewModel() {
 
             try {
                 _trainingList.value = DataState.Loading
-                val result = getAllTrainingUseCase()
+                val result = getAllTrainingUseCases()
                 _trainingList.value = DataState.Success(result)
 
             } catch (e: Exception) {

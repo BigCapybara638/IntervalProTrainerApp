@@ -19,7 +19,9 @@ import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import kotlinx.coroutines.launch
 import android.widget.Toast
 import com.example.intervalprotrainerapp.ui.training.TrainingFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     companion object {
