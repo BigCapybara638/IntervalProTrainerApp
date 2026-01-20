@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.intervalprotrainerapp.R
 import com.example.intervalprotrainerapp.databinding.ItemTrainingBinding
-import com.example.intervalprotrainerapp.models.TimerTime
-import com.example.intervalprotrainerapp.models.TrainingItem
+import com.example.intervalprotrainerapp.domain.models.TimerTime
+import com.example.intervalprotrainerapp.domain.models.TrainingItem
 
 class HomeAdapter : ListAdapter<TrainingItem, HomeAdapter.HomeViewHolder>(DIFF_CALLBACK) {
     var onItemClick: ((TrainingItem) -> Unit)? = null

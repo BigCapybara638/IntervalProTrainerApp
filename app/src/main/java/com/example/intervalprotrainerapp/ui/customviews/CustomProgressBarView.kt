@@ -9,7 +9,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.example.intervalprotrainerapp.models.TimerTime
+import com.example.intervalprotrainerapp.domain.models.TimerTime
 
 enum class CustomProgressBarColors {
     RED, PURPLE, BLUE, SKY, ORANGE, GREEN, YELLOW, LITE_GREEN

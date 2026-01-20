@@ -1,6 +1,6 @@
 package com.example.intervalprotrainerapp.data
 
-import com.example.intervalprotrainerapp.models.TrainingItem
+import com.example.intervalprotrainerapp.domain.models.TrainingItem
 
 /** Иммитация базы данных. [list] - список всех полей*/
 object DataBase {

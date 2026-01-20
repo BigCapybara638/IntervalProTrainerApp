@@ -13,7 +13,8 @@ import android.os.Parcelable
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.intervalprotrainerapp.models.TrainingItem
+import com.example.intervalprotrainerapp.domain.models.TimerState
+import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,9 +24,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 
-enum class TimerState {
-    WORK, RELAX
-}
 
 class TimerService : Service() {
 
@@ -80,9 +78,8 @@ class TimerService : Service() {
         return START_STICKY
     }
 
-    private fun startСounter(training: TrainingItem, _timerState: TimerState = TimerState.WORK
+    private fun startСounter(training: TrainingItem
     ) {
-        var timerState = _timerState
         if (isRunning) {
             stopСounter()
         }
@@ -101,7 +98,7 @@ class TimerService : Service() {
 
         job = serviceScope.launch {
             for (cycle in 0 until training.cycles * 2 - 1) {
-                when(timerState) {
+                when(state) {
                     TimerState.WORK -> {
                         for (progress in 0 .. training.intervalWork) {
                             delay(1000L)
@@ -117,7 +114,7 @@ class TimerService : Service() {
                             localBroadcastManager.sendBroadcast(intent)
                         }
                         counter.set(0)
-                        timerState = TimerState.RELAX
+                        state = TimerState.RELAX
                     }
                     TimerState.RELAX -> {
                         for (progress in 0 .. training.intervalRelax) {
@@ -134,7 +131,7 @@ class TimerService : Service() {
                             localBroadcastManager.sendBroadcast(intent)
                         }
                         counter.set(0)
-                        timerState = TimerState.WORK
+                        state = TimerState.WORK
                     }
                 }
             }
