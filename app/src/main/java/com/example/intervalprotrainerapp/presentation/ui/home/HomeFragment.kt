@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.ui.home
+package com.example.intervalprotrainerapp.presentation.ui.home
 
 import android.graphics.Rect
 import androidx.fragment.app.viewModels
@@ -18,7 +18,9 @@ import com.example.intervalprotrainerapp.databinding.FragmentHomeBinding
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import kotlinx.coroutines.launch
 import android.widget.Toast
-import com.example.intervalprotrainerapp.ui.training.TrainingFragment
+import com.example.intervalprotrainerapp.presentation.ui.training.TrainingFragment
+import com.example.intervalprotrainerapp.presentation.viewmodels.DataState
+import com.example.intervalprotrainerapp.presentation.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

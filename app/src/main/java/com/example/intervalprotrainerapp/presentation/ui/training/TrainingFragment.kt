@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.ui.training
+package com.example.intervalprotrainerapp.presentation.ui.training
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -17,9 +17,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import com.example.intervalprotrainerapp.data.service.TimerService
-import com.example.intervalprotrainerapp.ui.customviews.CustomProgressBarColors
-import com.example.intervalprotrainerapp.ui.customviews.CustomProgressBarView
+import com.example.intervalprotrainerapp.presentation.ui.customviews.CustomProgressBarColors
+import com.example.intervalprotrainerapp.presentation.ui.customviews.CustomProgressBarView
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Singleton
 
+@AndroidEntryPoint
 class TrainingFragment : Fragment() {
 
     private var _binding: FragmentTrainingBinding? = null

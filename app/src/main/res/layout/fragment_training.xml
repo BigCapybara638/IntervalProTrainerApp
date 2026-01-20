@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/titleTraining"
         tools:ignore="MissingConstraints" />
 
-    <com.example.intervalprotrainerapp.ui.customviews.CustomProgressBarView
+    <com.example.intervalprotrainerapp.presentation.ui.customviews.CustomProgressBarView
         android:id="@+id/customProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

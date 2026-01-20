@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.ui.home
+package com.example.intervalprotrainerapp.presentation.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

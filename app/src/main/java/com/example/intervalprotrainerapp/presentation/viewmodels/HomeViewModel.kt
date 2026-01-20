@@ -1,8 +1,7 @@
-package com.example.intervalprotrainerapp.ui.home
+package com.example.intervalprotrainerapp.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.intervalprotrainerapp.data.repository.DatabaseRepository
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import com.example.intervalprotrainerapp.domain.usecases.GetAllTrainingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

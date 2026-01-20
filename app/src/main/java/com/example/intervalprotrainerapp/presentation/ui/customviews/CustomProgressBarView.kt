@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.ui.customviews
+package com.example.intervalprotrainerapp.presentation.ui.customviews
 
 import com.example.intervalprotrainerapp.R
 import android.content.Context
@@ -14,6 +14,7 @@ import com.example.intervalprotrainerapp.domain.models.TimerTime
 enum class CustomProgressBarColors {
     RED, PURPLE, BLUE, SKY, ORANGE, GREEN, YELLOW, LITE_GREEN
 }
+
 
 class CustomProgressBarView @JvmOverloads constructor(
     context: Context,
