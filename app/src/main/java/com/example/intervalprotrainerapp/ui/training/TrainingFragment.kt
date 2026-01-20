@@ -26,14 +26,11 @@ class TrainingFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var training: TrainingItem
     private lateinit var progressBar: CustomProgressBarView
-
     private var progress = 1
     private var shares = 10
 
     private var cycle = 1
-
     private var timerState: String = "WORK"
-
     private var isRunning: Boolean = false
 
     private val broadcastReceiver = object : BroadcastReceiver() {
@@ -59,18 +56,6 @@ class TrainingFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        LocalBroadcastManager.getInstance(requireContext())
-            .registerReceiver(broadcastReceiver,
-                IntentFilter().apply {
-                    addAction(TimerService.ACTION_TIMER_STATE)
-                    addAction(TimerService.ACTION_TIMER_UPDATE)
-                }
-            )
-    }
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -91,43 +76,21 @@ class TrainingFragment : Fragment() {
         setupItems(training)
     }
 
-//    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-//        super.onViewStateRestored(savedInstanceState)
-//
-//        progress = savedInstanceState?.getInt("progress") ?: 1
-//        cycle = savedInstanceState?.getInt(TimerService.EXTRA_CYCLE) ?: 1
-//        timerState = savedInstanceState?.getString("state") ?: "WORK"
-//        val intent = Intent(requireContext(), TimerService::class.java).apply {
-//            action = TimerService.ACTION_STOP
-//        }
-//        requireContext().startService(intent)
-//
-//        if(isRunning) {
-//            val intent = Intent(requireContext(), TimerService::class.java).apply {
-//                action = TimerService.ACTION_RESTART
-//                putExtra("training", training)
-//                putExtra(TimerService.EXTRA_CYCLE, cycle)
-//                putExtra("state", timerState)
-//                putExtra("progress", progress)
-//
-//            }
-//            requireContext().startService(intent)
-//        }
-//    }
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(broadcastReceiver,
+                IntentFilter().apply {
+                    addAction(TimerService.ACTION_TIMER_STATE)
+                    addAction(TimerService.ACTION_TIMER_UPDATE)
+                }
+            )
+    }
 
     override fun onStop() {
         super.onStop()
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(broadcastReceiver)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        val intent = Intent(requireContext(), TimerService::class.java).apply {
-            action = TimerService.ACTION_STOP
-        }
-        requireContext().startService(intent)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -137,6 +100,15 @@ class TrainingFragment : Fragment() {
         outState.putInt(TimerService.EXTRA_CYCLE, cycle)
         outState.putString("state", timerState)
         outState.putInt("progress", progress)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        val intent = Intent(requireContext(), TimerService::class.java).apply {
+            action = TimerService.ACTION_STOP
+        }
+        requireContext().startService(intent)
     }
 
     private fun setupItems(training: TrainingItem) {

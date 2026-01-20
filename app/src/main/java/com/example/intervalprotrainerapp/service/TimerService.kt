@@ -4,7 +4,6 @@ import com.example.intervalprotrainerapp.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -19,15 +18,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
 
-@Parcelize
-enum class TimerState : Parcelable {
+enum class TimerState {
     WORK, RELAX
 }
 
@@ -41,33 +37,24 @@ class TimerService : Service() {
         const val CHANNEL_ID = "CounterServiceChannel"
         const val NOTIFICATION_ID = 101
         const val ACTION_START = "ACTION_START"
-        const val ACTION_RESTART = "ACTION_RESTART"
         const val ACTION_STOP = "ACTION_STOP"
         const val ACTION_SKIP = "ACTION_SKIP"
-
         const val ACTION_TIMER_STATE = "ACTION_TIMER_STATE"
         const val ACTION_TIMER_UPDATE = "ACTION_TIMER_UPDATE"
         const val EXTRA_COUNT = "EXTRA_COUNT"
         const val EXTRA_INTERVAL = "EXTRA_INTERVAL"
-
         const val EXTRA_TRAINING = "training"
-
         const val EXTRA_CYCLE = "EXTRA_CYCLE"
-
-        const val EXTRA_PROGRESS = "EXTRA_PROGRESS"
-        const val EXTRA_SHARES= "EXTRA_SHARES"
-
 
     }
 
     private val counter = AtomicInteger(0)
     private var isRunning = false
-
     private var state = TimerState.WORK
     private var job: Job? = null
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-
     private lateinit var notificationManager: NotificationManager
+
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -83,34 +70,21 @@ class TimerService : Service() {
         when(intent?.action) {
             ACTION_START -> {
                 val training = intent.getParcelableExtra<TrainingItem>(EXTRA_TRAINING)
-                start_counter(training!!)
+                startСounter(training!!)
             }
             ACTION_STOP -> {
-                stop_counter()
-            }
-            ACTION_RESTART -> {
-                val training = intent.getParcelableExtra<TrainingItem>(EXTRA_TRAINING)
-                val shares = intent.getIntExtra(EXTRA_SHARES, 10)
-                val progress = intent.getIntExtra(EXTRA_PROGRESS, 1)
-                val state = if(intent.getStringExtra("state") == "WORK") {
-                    TimerState.WORK
-                } else TimerState.RELAX
-
-                start_counter(training!!, shares, progress, state)
+                stopСounter()
             }
         }
 
         return START_STICKY
     }
 
-    private fun start_counter(training: TrainingItem,
-                              progress: Int = 0,
-                              cycle: Int = 0,
-                              _timerState: TimerState = TimerState.WORK
+    private fun startСounter(training: TrainingItem, _timerState: TimerState = TimerState.WORK
     ) {
         var timerState = _timerState
         if (isRunning) {
-            stop_counter()
+            stopСounter()
         }
         counter.set(0)
         isRunning = true
@@ -174,7 +148,7 @@ class TimerService : Service() {
         }
     }
 
-    private fun stop_counter() {
+    private fun stopСounter() {
         counter.set(0)
         isRunning = false
         job?.cancel()
