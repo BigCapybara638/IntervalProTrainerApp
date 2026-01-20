@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.data
+package com.example.intervalprotrainerapp.data.local
 
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 

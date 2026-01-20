@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
-import com.example.intervalprotrainerapp.service.TimerService
+import com.example.intervalprotrainerapp.data.service.TimerService
 import com.example.intervalprotrainerapp.ui.customviews.CustomProgressBarColors
 import com.example.intervalprotrainerapp.ui.customviews.CustomProgressBarView
 

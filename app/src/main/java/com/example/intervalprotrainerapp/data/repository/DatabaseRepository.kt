@@ -1,8 +1,8 @@
-package com.example.intervalprotrainerapp.data
+package com.example.intervalprotrainerapp.data.repository
 
+import com.example.intervalprotrainerapp.data.local.DataBase
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import com.example.intervalprotrainerapp.domain.repositories.TrainingRepository
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Singleton
 

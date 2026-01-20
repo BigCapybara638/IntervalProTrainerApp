@@ -1,6 +1,6 @@
 package com.example.intervalprotrainerapp.di
 
-import com.example.intervalprotrainerapp.data.DatabaseRepository
+import com.example.intervalprotrainerapp.data.repository.DatabaseRepository
 import com.example.intervalprotrainerapp.domain.repositories.TrainingRepository
 import com.example.intervalprotrainerapp.domain.usecases.GetAllTrainingUseCase
 import dagger.Module

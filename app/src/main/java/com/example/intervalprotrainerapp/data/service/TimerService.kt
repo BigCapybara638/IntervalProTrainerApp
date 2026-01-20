@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.service
+package com.example.intervalprotrainerapp.data.service
 
 import com.example.intervalprotrainerapp.R
 import android.app.Notification
@@ -59,7 +59,7 @@ class TimerService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.e("lifeCycle", "onCreate")
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
     }
 
