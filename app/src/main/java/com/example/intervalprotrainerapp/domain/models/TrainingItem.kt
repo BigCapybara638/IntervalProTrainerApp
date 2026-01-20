@@ -1,12 +1,11 @@
-package com.example.intervalprotrainerapp.models
+package com.example.intervalprotrainerapp.domain.models
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TrainingItem(
-    val id: Int = 0,
+    val id: Long = 0,
     val name: String = "",
     val intervalWork: Int = 10,
     val intervalRelax: Int = 10,

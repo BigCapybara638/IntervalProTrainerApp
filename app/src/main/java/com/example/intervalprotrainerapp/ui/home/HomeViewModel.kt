@@ -3,14 +3,15 @@ package com.example.intervalprotrainerapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.intervalprotrainerapp.data.DatabaseRepository
-import com.example.intervalprotrainerapp.models.TrainingItem
+import com.example.intervalprotrainerapp.domain.models.TrainingItem
+import com.example.intervalprotrainerapp.domain.usecases.GetAllTrainingUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel() : ViewModel() {
 
-    private val databaseRepository = DatabaseRepository()
+    private val getAllTrainingUseCase = GetAllTrainingUseCase(DatabaseRepository())
 
     /** Состяние для данных о тренировках */
     private val _trainingList = MutableStateFlow<DataState<List<TrainingItem>>>(DataState.Loading)
@@ -36,7 +37,7 @@ class HomeViewModel : ViewModel() {
 
             try {
                 _trainingList.value = DataState.Loading
-                val result = databaseRepository.getList()
+                val result = getAllTrainingUseCase()
                 _trainingList.value = DataState.Success(result)
 
             } catch (e: Exception) {

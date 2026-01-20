@@ -1,4 +1,4 @@
-package com.example.intervalprotrainerapp.models
+package com.example.intervalprotrainerapp.domain.models
 
 data class TimerTime(
     var _seconds: Int

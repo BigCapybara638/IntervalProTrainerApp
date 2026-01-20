@@ -15,11 +15,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.intervalprotrainerapp.R
 import com.example.intervalprotrainerapp.databinding.FragmentHomeBinding
-import com.example.intervalprotrainerapp.models.TrainingItem
+import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import kotlinx.coroutines.launch
 import android.widget.Toast
-import androidx.fragment.app.add
-import com.example.intervalprotrainerapp.ui.home.HomeAdapter
 import com.example.intervalprotrainerapp.ui.training.TrainingFragment
 
 class HomeFragment : Fragment() {
