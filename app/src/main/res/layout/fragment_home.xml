@@ -62,6 +62,7 @@
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:contentDescription="ADD"
+            android:backgroundTint="@color/blackcard1"
             android:src="@android:drawable/ic_menu_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

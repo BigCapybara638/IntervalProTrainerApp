@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")  // Эта строка должна быть именно такой
+    id("com.google.dagger.hilt.android")
 }
 
 android {

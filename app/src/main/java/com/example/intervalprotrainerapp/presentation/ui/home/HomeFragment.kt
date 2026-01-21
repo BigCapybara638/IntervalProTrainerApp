@@ -19,17 +19,15 @@ import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import kotlinx.coroutines.launch
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.intervalprotrainerapp.presentation.ui.common.BaseFragment
 import com.example.intervalprotrainerapp.presentation.ui.training.TrainingFragment
 import com.example.intervalprotrainerapp.presentation.viewmodels.DataState
 import com.example.intervalprotrainerapp.presentation.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment(override var title: String = "Тренировки") : BaseFragment() {
 
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
@@ -49,6 +47,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.textView.text = title
 
         setupRecyclerView()
         setupObservers()

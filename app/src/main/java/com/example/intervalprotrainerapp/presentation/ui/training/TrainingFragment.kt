@@ -18,13 +18,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import com.example.intervalprotrainerapp.data.service.TimerService
+import com.example.intervalprotrainerapp.presentation.ui.common.BaseFragment
 import com.example.intervalprotrainerapp.presentation.ui.customviews.CustomProgressBarColors
 import com.example.intervalprotrainerapp.presentation.ui.customviews.CustomProgressBarView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Singleton
 
 @AndroidEntryPoint
-class TrainingFragment : Fragment() {
+class TrainingFragment(override var title: String = "") : BaseFragment() {
 
     private var _binding: FragmentTrainingBinding? = null
     private val binding get() = _binding!!
@@ -120,7 +121,8 @@ class TrainingFragment : Fragment() {
     }
 
     private fun setupItems(training: TrainingItem) {
-        binding.titleTraining.text = training.name
+        title = training.name
+        binding.titleTraining.text = title
         binding.countCycles.text = "Количество кругов: ${training.cycles}"
         binding.countWork.text = "Время работы: ${training.intervalWork}"
         binding.countRelax.text = "Время отдыха: ${training.intervalRelax}"
