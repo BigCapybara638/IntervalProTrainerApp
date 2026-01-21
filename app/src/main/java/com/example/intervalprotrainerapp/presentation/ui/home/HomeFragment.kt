@@ -18,6 +18,7 @@ import com.example.intervalprotrainerapp.databinding.FragmentHomeBinding
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import kotlinx.coroutines.launch
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.example.intervalprotrainerapp.presentation.ui.training.TrainingFragment
 import com.example.intervalprotrainerapp.presentation.viewmodels.DataState
 import com.example.intervalprotrainerapp.presentation.viewmodels.HomeViewModel
@@ -126,16 +127,10 @@ class HomeFragment : Fragment() {
 
     /** Навигация в [TrainingFragment] */
     fun navigateToSecondFragment(training: TrainingItem) {
-        val fragment = TrainingFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable("training", training)
-            }
+        val bundle = Bundle().apply {
+            putParcelable("training", training)
         }
-
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.itemFragment, fragment)
-            .addToBackStack(null)
-            .commit()
+        findNavController().navigate(R.id.action_home_to_details, bundle)
     }
 }
 

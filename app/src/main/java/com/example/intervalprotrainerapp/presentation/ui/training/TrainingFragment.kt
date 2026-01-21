@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
 import com.example.intervalprotrainerapp.databinding.FragmentTrainingBinding
 import com.example.intervalprotrainerapp.domain.models.TrainingItem
 import com.example.intervalprotrainerapp.data.service.TimerService
@@ -77,6 +78,10 @@ class TrainingFragment : Fragment() {
 
         updateUi(training, isRunning)
         setupItems(training)
+
+        binding.buttonBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     override fun onStart() {
@@ -155,6 +160,7 @@ class TrainingFragment : Fragment() {
             binding.buttonStart.visibility = View.GONE
             binding.buttonStop.visibility = View.VISIBLE
             binding.buttonSkip.visibility = View.VISIBLE
+            binding.buttonBack.visibility = View.GONE
 
             when(training.color) {
                 0 -> {
@@ -219,6 +225,8 @@ class TrainingFragment : Fragment() {
             binding.buttonStart.visibility = View.VISIBLE
             binding.buttonStop.visibility = View.GONE
             binding.buttonSkip.visibility = View.GONE
+            binding.buttonBack.visibility = View.VISIBLE
+
 
             progressBar.setTimer(training.intervalWork)
             progressBar.updateCountShares(training.intervalWork)
